@@ -1,0 +1,52 @@
+- name: Create pgdg key dir
+  file:
+    path: /usr/share/postgresql-common/pgdg
+    state: directory
+    mode: '0755'
+
+- name: Download PGDG key
+  get_url:
+    url: https://www.postgresql.org/media/keys/ACCC4CF8.asc
+    dest: /usr/share/postgresql-common/pgdg/apt.postgresql.org.asc
+    mode: '0644'
+
+- name: Add PostgreSQL repository
+  copy:
+    dest: /etc/apt/sources.list.d/pgdg.sources
+    content: |
+      Types: deb
+      URIs: https://apt.postgresql.org/pub/repos/apt
+      Suites: bookworm-pgdg
+      Architectures: amd64
+      Components: main
+      Signed-By: /usr/share/postgresql-common/pgdg/apt.postgresql.org.asc
+
+- name: Update apt cache
+  apt:
+    update_cache: yes
+
+
+- name: Install PostgreSQL
+  apt:
+    name:
+      - postgresql-18
+      - postgresql-client-18
+      - postgresql-contrib
+      - python3-psycopg2
+      - acl
+    state: present
+
+
+# проверка  что база и кластер стартовали (при выполнении с этим были проблемы)
+- name: Ensure PostgreSQL service is started
+  systemd:
+    name: postgresql
+    state: started
+    enabled: yes
+
+- name: Check PostgreSQL cluster
+  command: pg_lsclusters
+  register: pg_clusters
+  changed_when: false
+
+
