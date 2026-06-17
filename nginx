@@ -1,0 +1,40 @@
+install nginx
+sudo mkdir /var/www/sre
+sudo cp -r web /var/www/sre/.
+
+sudo cp docker/hosts/app.conf /etc/nginx/sites-available/sre.conf
+sudo nano /etc/nginx/sites-available/sre.conf
+пишем include путь к snippets/app-defaults  
+sudo cp ~/sre-hello-world/docker/hosts/app-defaults /etc/nginx/snippets/app-defaults  
+
+
+
+sudo docker inspect -f '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' sre-hello-world-php-1
+
+
+
+Откыть
+
+```
+sudo nano /etc/nginx/snippets/app-defaults
+```
+
+и заменить:
+
+```
+fastcgi_pass php:9000;
+```
+
+на:
+```
+fastcgi_pass 127.0.0.1:9000;
+```
+
+
+sudo ln -s /etc/nginx/sites-available/sre.conf /etc/nginx/sites-enabled/.
+
+sudo rm /etc/nginx/sites-enabled/default
+sudo nginx -t
+
+
+sudo systemctl restart nginx
