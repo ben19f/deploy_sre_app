@@ -1,0 +1,13 @@
+- name: Update apt cache
+  apt:
+    update_cache: yes
+
+- name: Install prerequisites
+  apt:
+    name:
+      - curl
+      - ca-certificates
+      - git
+      - gnupg
+    state: present
+    update_cache: yes
