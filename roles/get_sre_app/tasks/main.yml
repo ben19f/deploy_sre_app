@@ -1,0 +1,5 @@
+- name: Clone application
+  git:
+    repo: https://github.com/muxx/sre-hello-world.git
+    dest: /tmp/sre-app
+    force: yes
