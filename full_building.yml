@@ -1,0 +1,14 @@
+- hosts: all
+  become: yes
+
+  roles:
+    - base
+    - docker-install
+    - get_sre_app
+    - build-sre-app
+    - nginx
+    - postgresql
+    
+    
+  
+    
