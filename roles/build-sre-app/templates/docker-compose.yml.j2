@@ -1,0 +1,27 @@
+version: "3.1"
+
+services:
+
+  php:
+    build: docker/images/php
+    
+
+    working_dir: /var/www/sre
+
+    volumes:
+      - /opt/sre-app/.:/var/www/sre
+
+    ports:
+      - "127.0.0.1:9000:9000"
+
+    environment:
+      POSTGRES_HOST: "{{ ansible_default_ipv4.address }}"
+      POSTGRES_DB: "{{ postgres_db }}"
+      POSTGRES_USER: "{{ postgres_user }}"
+      POSTGRES_PASSWORD: "{{ postgres_password }}"
+
+networks:
+  appnet:
+    ipam:
+      config:
+        - subnet: 172.18.0.0/16
