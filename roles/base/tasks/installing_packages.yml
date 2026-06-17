@@ -11,3 +11,7 @@
       - gnupg
     state: present
     update_cache: yes
+
+- name: Gather RAM facts
+  set_fact:
+    total_ram_mb: "{{ ansible_memtotal_mb }}"

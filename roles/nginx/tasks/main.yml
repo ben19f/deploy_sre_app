@@ -10,7 +10,12 @@
     path: /var/www/sre
     state: directory
 
-
+- name: Tune nginx for current server
+  lineinfile:
+    path: /etc/nginx/nginx.conf
+    regexp: "^worker_processes"
+    line: "worker_processes auto;"
+  notify: Restart nginx
 
 - name: Copy app-defaults
   copy:

@@ -37,16 +37,19 @@
     state: present
 
 
-# проверка  что база и кластер стартовали (при выполнении с этим были проблемы)
+- name: Deploy tuned PostgreSQL config
+  template:
+    src: postgresql.conf.j2
+    dest: /etc/postgresql/18/main/postgresql.conf
+  # notify: Restart PostgreSQL
+
+
 - name: Ensure PostgreSQL service is started
   systemd:
     name: postgresql
     state: started
     enabled: yes
 
-- name: Check PostgreSQL cluster
-  command: pg_lsclusters
-  register: pg_clusters
-  changed_when: false
+
 
 
