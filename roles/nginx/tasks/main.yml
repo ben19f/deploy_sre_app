@@ -1,0 +1,63 @@
+- name: Install nginx
+  apt:
+    name: nginx
+    state: present
+    update_cache: yes
+
+
+- name: Create sre dir
+  file:
+    path: /var/www/sre
+    state: directory
+
+
+
+- name: Copy app-defaults
+  copy:
+    src: /opt/sre-app/web
+    dest: /var/www/sre
+
+    remote_src: yes
+
+- name: Copy app-defaults
+  copy:
+    src: /opt/sre-app/docker/hosts/app-defaults
+    dest: /etc/nginx/app-defaults
+
+    remote_src: yes
+
+
+- name: Copy app-defaults
+  copy:
+    src: /opt/sre-app/docker/hosts/app.conf
+    dest: /etc/nginx/sites-available/sre.conf
+    remote_src: yes
+
+- name: Enable site
+  file:
+    src: /etc/nginx/sites-available/sre.conf
+    dest: /etc/nginx/sites-enabled/sre.conf
+    state: link
+
+
+- name: Remove default site
+  file:
+    path: /etc/nginx/sites-enabled/default
+    state: absent
+
+
+- name: Replace php hostname with localhost
+  replace:
+    path: /etc/nginx/app-defaults
+    regexp: 'fastcgi_pass php:9000;'
+    replace: 'fastcgi_pass 127.0.0.1:9000;'
+
+- name: Test nginx config
+  command: nginx -t
+  changed_when: false
+
+- name: Restart nginx
+  systemd:
+    name: nginx
+    state: restarted
+    enabled: yes
