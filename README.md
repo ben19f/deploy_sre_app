@@ -27,23 +27,9 @@ ansible-playbook -i inventory.ini playbook_deploy.yml
 
 
 _______
+# Лимиты
 
-
-🐘 PostgreSQL tuning
-
-PostgreSQL настроен через шаблон конфигурации (postgresql.conf.j2) с динамическими параметрами:
-
-shared_buffers → ~25% RAM
-effective_cache_size → ~75% RAM
-work_mem → фиксированное значение (16MB)
-maintenance_work_mem → фиксированное значение (64MB)
-max_connections → ограничено до 50 для предотвращения перегрузки памяти
-
-📌 Пример (для сервера 2GB RAM):
-
-shared_buffers: 512MB
-effective_cache_size: 1536MB
-⚙️ Nginx tuning
+Nginx tuning
 
 Для повышения производительности Nginx настроен:
 
@@ -51,9 +37,13 @@ worker_processes = auto (соответствует числу CPU cores)
 оптимизирована обработка подключений под серверные ресурсы
 
 
-в php-fpm возможно обратил бы внимание на лмиты (порезал бы минимум пополам)
-memory_limit = 
-opcache.memory_consumption = 
+### RAM
 
-opcache.max_accelerated_files = 
+при подключеении к серверу делим 
+35% под базу данных
+30% для контейнера с PHP-FPM
 
+
+### в кнтейнере 
+    200мб это резерв на случай ошибок  чтобы не сработал OOM killer
+    остальное делим на воркеры
