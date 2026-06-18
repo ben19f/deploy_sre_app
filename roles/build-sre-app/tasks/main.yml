@@ -1,3 +1,32 @@
+- name: Gather memory info
+  setup:
+    gather_subset:
+      - hardware
+
+- name: Calculate PHP memory budget
+  set_fact:
+    php_memory_mb: "{{ (ansible_memtotal_mb * 0.30) | int }}"
+    php_worker_memory_mb: 30
+
+- name: Calculate PHP-FPM workers
+  set_fact:
+    php_fpm_max_children: "{{ (php_memory_mb / php_worker_memory_mb) | int }}"
+
+
+
+- name: Calculate PHP-FPM pools
+  set_fact:
+    php_fpm_start_servers: "{{ (php_fpm_max_children * 0.2) | int }}"
+    php_fpm_min_spare_servers: "{{ (php_fpm_max_children * 0.1) | int }}"
+    php_fpm_max_spare_servers: "{{ (php_fpm_max_children * 0.3) | int }}"
+
+
+
+- name: Calculate OPcache settings
+  set_fact:
+    opcache_memory: "{{ (php_memory_mb * 0.15) | int }}"
+
+
 
 - name: Copy application files
   copy:
@@ -9,6 +38,12 @@
   template:
     src: docker-compose.yml.j2
     dest: /opt/sre-app/docker-compose.yml
+
+
+- name: Copy template limits
+  ansible.builtin.template:
+    src: templates/php.ini.j2          
+    dest: /opt/sre-app/docker/images/php/php.ini     
 
 - name: Start application
   community.docker.docker_compose_v2:

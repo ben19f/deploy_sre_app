@@ -7,7 +7,7 @@ postgres_password: sre
 # доли от RAM
 ram_os_reserve: 0.2
 ram_postgres: 0.35
-ram_php: 0.30
+# ram_php: 0.30
 ram_buffer: 0.15
 
 

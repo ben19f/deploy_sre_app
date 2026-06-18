@@ -1,10 +1,15 @@
+pm.max_children = {{ php_fpm_max_children }}
+pm.start_servers = {{ php_fpm_start_servers }}
+pm.min_spare_servers = {{ php_fpm_min_spare_servers }}
+pm.max_spare_servers = {{ php_fpm_max_spare_servers }}
+
 error_reporting = E_ALL & ~E_DEPRECATED & ~E_STRICT
-upload_max_filesize = 100M
-post_max_size = 108M
-memory_limit = 512M
-max_execution_time = 180s
+upload_max_filesize = {{ php_upload_max_filesize }}
+post_max_size = {{ php_post_max_size }}
+memory_limit = {{ php_memory_limit }}
+max_execution_time = 180
 realpath_cache_size = 16M
 
-opcache.memory_consumption = 384
+opcache.memory_consumption = {{ opcache_memory }}
 opcache.interned_strings_buffer = 32
 opcache.max_accelerated_files = 16000

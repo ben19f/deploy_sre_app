@@ -19,10 +19,7 @@ services:
       POSTGRES_DB: "{{ postgres_db }}"
       POSTGRES_USER: "{{ postgres_user }}"
       POSTGRES_PASSWORD: "{{ postgres_password }}"
-    deploy:
-      resources:
-        limits:
-          memory: 900M
+    mem_limit: 900m
 
 networks:
   appnet:
