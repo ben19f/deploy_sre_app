@@ -1,50 +1,95 @@
-- name: Gather memory info
+---
+# =========================
+# 1. Gather facts
+# =========================
+- name: Gather system facts
   setup:
     gather_subset:
       - hardware
 
+# =========================
+# 2. RAM allocation model
+# =========================
+- name: Define RAM split (production model)
+  set_fact:
+    ram_total_mb: "{{ ansible_memtotal_mb }}"
+
+    # ram_os_reserve: 0.20
+    # ram_postgres: 0.35
+    # ram_php: 0.30
+    # ram_buffer: 0.15
+
+# PHP budget
 - name: Calculate PHP memory budget
   set_fact:
-    php_memory_mb: "{{ (ansible_memtotal_mb * 0.30) | int }}"
-    php_worker_memory_mb: 30
+    php_memory_mb: "{{ (ram_total_mb * ram_php) | int }}"
 
-- name: Calculate PHP-FPM workers
+# =========================
+# 3. PHP-FPM tuning model
+# =========================
+- name: Define worker memory assumption
+  set_fact:
+    php_worker_memory_mb: 50   # realistic per-process RSS
+
+- name: Calculate PHP-FPM max children
   set_fact:
     php_fpm_max_children: "{{ (php_memory_mb / php_worker_memory_mb) | int }}"
 
-
-
-- name: Calculate PHP-FPM pools
+- name: Calculate PHP-FPM pool tuning
   set_fact:
     php_fpm_start_servers: "{{ (php_fpm_max_children * 0.2) | int }}"
     php_fpm_min_spare_servers: "{{ (php_fpm_max_children * 0.1) | int }}"
     php_fpm_max_spare_servers: "{{ (php_fpm_max_children * 0.3) | int }}"
 
+# =========================
+# 4. PHP.ini values
+# =========================
+- name: Define PHP ini static values
+  set_fact:
+    php_upload_max_filesize: "100M"
+    php_post_max_size: "108M"
+    php_memory_limit: "{{ php_memory_mb }}M"
+    php_max_execution_time: 180
+    php_realpath_cache_size: "16M"
 
-
+# =========================
+# 5. OPcache tuning
+# =========================
 - name: Calculate OPcache settings
   set_fact:
     opcache_memory: "{{ (php_memory_mb * 0.15) | int }}"
+    opcache_interned_strings_buffer: 32
+    opcache_max_accelerated_files: 16000
 
-
-
+# =========================
+# 6. Copy application
+# =========================
 - name: Copy application files
   copy:
-    src: /tmp/sre-app          
+    src: /tmp/sre-app
     dest: /opt/
-    remote_src: yes   
-    
+    remote_src: yes
+
+# =========================
+# 7. Deploy docker-compose
+# =========================
 - name: Deploy docker-compose
   template:
     src: docker-compose.yml.j2
     dest: /opt/sre-app/docker-compose.yml
 
+# =========================
+# 8. Render php.ini (IMPORTANT PART)
+# =========================
+- name: Render PHP configuration
+  template:
+    src: php.ini.j2
+    dest: /opt/sre-app/docker/images/php/php.ini
+    mode: "0644"
 
-- name: Copy template limits
-  ansible.builtin.template:
-    src: templates/php.ini.j2          
-    dest: /opt/sre-app/docker/images/php/php.ini     
-
+# =========================
+# 9. Start application
+# =========================
 - name: Start application
   community.docker.docker_compose_v2:
     project_src: /opt/sre-app
