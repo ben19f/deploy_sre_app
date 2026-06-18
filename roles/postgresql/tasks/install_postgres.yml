@@ -37,11 +37,7 @@
     state: present
 
 
-- name: Deploy tuned PostgreSQL config
-  template:
-    src: postgresql.conf.j2
-    dest: /etc/postgresql/18/main/postgresql.conf
-  # notify: Restart PostgreSQL
+
 
 
 - name: Ensure PostgreSQL service is started
@@ -50,10 +46,23 @@
     state: started
     enabled: yes
 
-- name: Check PostgreSQL cluster
+# - name: Check PostgreSQL cluster
+#   command: pg_lsclusters
+#   register: pg_clusters
+#   changed_when: false
+
+- name: Check PostgreSQL cluster (safe)
   command: pg_lsclusters
   register: pg_clusters
   changed_when: false
+  failed_when: false
 
+- name: Deploy tuned PostgreSQL config
+  template:
+    src: postgresql.conf.j2
+    dest: /etc/postgresql/18/main/conf.d/99-tuning.conf
 
-
+- name: Restart PostgreSQL
+  systemd:
+    name: postgresql
+    state: restarted
