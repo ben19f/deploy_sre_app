@@ -41,6 +41,15 @@
     php_fpm_min_spare_servers: "{{ (php_fpm_max_children * 0.1) | int }}"
     php_fpm_max_spare_servers: "{{ (php_fpm_max_children * 0.3) | int }}"
 
+
+- name: Show PHP-FPM pool tuning values
+  debug:
+    msg: |
+      Start servers: {{ php_fpm_start_servers }}
+      Min spare:   {{ php_fpm_min_spare_servers }}
+      Max spare:   {{ php_fpm_max_spare_servers }}
+
+
 # =========================
 # 4. PHP.ini values
 # =========================
@@ -52,6 +61,15 @@
     php_max_execution_time: 180
     php_realpath_cache_size: "16M"
 
+
+- name: Show PHP-FPM pool tuning values
+  debug:
+    msg: |
+      php_memory_limit: {{ php_memory_limit }}
+      Min spare:   {{ php_fpm_min_spare_servers }}
+      Max spare:   {{ php_fpm_max_spare_servers }}
+
+
 # =========================
 # 5. OPcache tuning
 # =========================
@@ -59,7 +77,7 @@
   set_fact:
     opcache_memory: "{{ (php_memory_mb * 0.15) | int }}"
     opcache_interned_strings_buffer: 32
-    opcache_max_accelerated_files: 16000
+    opcache_max_accelerated_files: 8000
 
 # =========================
 # 6. Copy application
