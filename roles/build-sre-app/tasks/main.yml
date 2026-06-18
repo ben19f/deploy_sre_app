@@ -1,35 +1,30 @@
 ---
-# =========================
-# 1. Gather facts
-# =========================
+# озу сервера
 - name: Gather system facts
   setup:
     gather_subset:
       - hardware
 
-# =========================
-# 2. RAM allocation model
-# =========================
-- name: Define RAM split (production model)
+- name: DD
+  debug:
+    msg: |
+      hard: {{ gather_subset }}
+     
+- name: Define RAM split 
   set_fact:
     ram_total_mb: "{{ ansible_memtotal_mb }}"
 
-    # ram_os_reserve: 0.20
-    # ram_postgres: 0.35
-    # ram_php: 0.30
-    # ram_buffer: 0.15
-
-# PHP budget
+# PHP budget вычитаю 300 чтобы оставить запас на случай косячныз воркеров
 - name: Calculate PHP memory budget
   set_fact:
-    php_memory_mb: "{{ (ram_total_mb * ram_php) | int }}"
+    docker_memory_mb: "{{ (ram_total_mb * ram_php) | int }}"
+    php_memory_mb: "{{ (ram_total_mb * ram_php - 300) | int }}"
 
-# =========================
-# 3. PHP-FPM tuning model
-# =========================
+
+# 3. tuning model
 - name: Define worker memory assumption
   set_fact:
-    php_worker_memory_mb: 50   # realistic per-process RSS
+    php_worker_memory_mb: 30   # было 22 взял с запасом
 
 - name: Calculate PHP-FPM max children
   set_fact:
@@ -50,9 +45,7 @@
       Max spare:   {{ php_fpm_max_spare_servers }}
 
 
-# =========================
 # 4. PHP.ini values
-# =========================
 - name: Define PHP ini static values
   set_fact:
     php_upload_max_filesize: "100M"
@@ -79,35 +72,26 @@
     opcache_interned_strings_buffer: 32
     opcache_max_accelerated_files: 8000
 
-# =========================
-# 6. Copy application
-# =========================
+
 - name: Copy application files
   copy:
     src: /tmp/sre-app
     dest: /opt/
     remote_src: yes
 
-# =========================
-# 7. Deploy docker-compose
-# =========================
 - name: Deploy docker-compose
   template:
     src: docker-compose.yml.j2
     dest: /opt/sre-app/docker-compose.yml
 
-# =========================
-# 8. Render php.ini (IMPORTANT PART)
-# =========================
+
 - name: Render PHP configuration
   template:
     src: php.ini.j2
     dest: /opt/sre-app/docker/images/php/php.ini
     mode: "0644"
 
-# =========================
-# 9. Start application
-# =========================
+
 - name: Start application
   community.docker.docker_compose_v2:
     project_src: /opt/sre-app
