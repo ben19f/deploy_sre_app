@@ -3,6 +3,14 @@ postgres_user: sre
 postgres_password: sre
 
 
+
+# доли от RAM
+ram_os_reserve: 0.2
+ram_postgres: 0.35
+ram_php: 0.30
+ram_buffer: 0.15
+
+
 # PostgreSQL tuning (RAM-based)
 pg_shared_buffers: "{{ (ansible_memtotal_mb * 0.25) | int }}MB"
 pg_effective_cache_size: "{{ (ansible_memtotal_mb * 0.75) | int }}MB"
