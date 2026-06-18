@@ -49,3 +49,11 @@ effective_cache_size: 1536MB
 
 worker_processes = auto (соответствует числу CPU cores)
 оптимизирована обработка подключений под серверные ресурсы
+
+
+в php-fpm возможно обратил бы внимание на лмиты (порезал бы минимум пополам)
+memory_limit = 
+opcache.memory_consumption = 
+
+opcache.max_accelerated_files = 
+
