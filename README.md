@@ -9,6 +9,15 @@
 
 для запуска нужно внести свои сервера в inventory
 
+
+## Установка зависимостей Ansible
+
+Перед запуском плейбука:
+
+```bash
+ansible-galaxy collection install -r requirements.yml
+
+
 ## Полное развертывание
 
 ansible-playbook -i inventory.ini playbook_full.yml
