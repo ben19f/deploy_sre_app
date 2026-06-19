@@ -98,6 +98,7 @@
     state: present
     build: always
 
+
 - name: Wait PostgreSQL
   command: pg_isready -U {{ postgres_user }}
   register: pg_check

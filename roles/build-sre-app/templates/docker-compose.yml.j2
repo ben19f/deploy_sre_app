@@ -1,10 +1,16 @@
 services:
-  app:
-    build:
-      context: .
-    ports:
-      - "127.0.0.1:9000:80"
+  php:
+    build: docker/images/php
+    
 
+    working_dir: /var/www/sre
+
+    volumes:
+      - /opt/sre-app/.:/var/www/sre
+
+    ports:
+      - "127.0.0.1:9000:9000"
+      
     extra_hosts:
       - "host.docker.internal:host-gateway"
 
@@ -13,3 +19,4 @@ services:
       POSTGRES_DB: {{ postgres_db }}
       POSTGRES_USER: {{ postgres_user }}
       POSTGRES_PASSWORD: {{ postgres_password }}
+    mem_limit: "{{ docker_memory_mb }}M"

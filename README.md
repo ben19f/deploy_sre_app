@@ -43,7 +43,7 @@ nano group_vars/all.yml
 
 ## Полное развертывание
 
-ansible-playbook -i inventory.ini playbook_full.yml
+ansible-playbook -i inventory.ini playbook_full.yml --ask-vault-pass
 
 
 
