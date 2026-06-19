@@ -27,6 +27,17 @@ ansible-playbook -i inventory.ini playbook_deploy.yml
 
 
 
+
+
+Модель работы Docker:
+
+- PHP-FPM работает в контейнере Docker
+- PostgreSQL работает на хост-машине
+- Контейнер обращается к PostgreSQL через IP-адрес хоста (ansible_default_ipv4.address)
+- PostgreSQL настроен на разрешение подключений из подсети Docker (172.18.0.0/16)
+
+
+
 _______
 # Лимиты
 
