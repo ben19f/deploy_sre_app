@@ -4,6 +4,7 @@
   roles:
     - get_sre_app
     - build-sre-app
+    - final-tests
     
   
     
