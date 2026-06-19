@@ -56,9 +56,10 @@
     path: /etc/nginx/app-defaults
     regexp: 'fastcgi_pass php:9000;'
     replace: 'fastcgi_pass 127.0.0.1:9000;'
+  notify: Restart nginx
 
 - name: Test nginx config
   command: nginx -t
   changed_when: false
-  notify: Restart nginx
+  
 
