@@ -99,9 +99,3 @@
     build: always
 
 
-- name: Wait PostgreSQL
-  command: pg_isready -U {{ postgres_user }}
-  register: pg_check
-  retries: 20
-  delay: 3
-  until: pg_check.rc == 0

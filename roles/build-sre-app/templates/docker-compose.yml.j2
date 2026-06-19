@@ -10,7 +10,7 @@ services:
 
     ports:
       - "127.0.0.1:9000:9000"
-      
+
     extra_hosts:
       - "host.docker.internal:host-gateway"
 
@@ -20,3 +20,9 @@ services:
       POSTGRES_USER: {{ postgres_user }}
       POSTGRES_PASSWORD: {{ postgres_password }}
     mem_limit: "{{ docker_memory_mb }}M"
+
+    healthcheck:
+      test: ["CMD", "php", "-v"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
