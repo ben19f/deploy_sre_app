@@ -7,7 +7,7 @@
   git:
     repo: "{{ app_repo }}"
     dest: "/opt/releases/{{ app_version }}"
-    version: "{{ app_version }}"
+    # version: "{{ app_version }}"
     force: no
 
 
