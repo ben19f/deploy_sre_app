@@ -1,6 +1,21 @@
+- name: Save previous version
+  command: readlink /opt/sre-app
+  register: previous_release
+  changed_when: false
+
 - name: Wait PostgreSQL
   command: pg_isready -U {{ postgres_user }}
   register: pg_check
   retries: 20
   delay: 3
   until: pg_check.rc == 0
+
+
+- name: Check application health
+  uri:
+    url: "http://127.0.0.1:9000"
+    status_code: 200
+  register: health
+  retries: 5
+  delay: 3
+  until: health.status == 200

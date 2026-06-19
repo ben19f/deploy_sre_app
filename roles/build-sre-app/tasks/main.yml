@@ -73,11 +73,11 @@
     opcache_max_accelerated_files: 8000
 
 
-- name: Copy application files
-  copy:
-    src: /tmp/sre-app
-    dest: /opt/
-    remote_src: yes
+# - name: Copy application files
+#   copy:
+#     src: /tmp/sre-app
+#     dest: /opt/
+#     remote_src: yes
 
 - name: Deploy docker-compose
   template:

@@ -1,5 +1,19 @@
-- name: Clone application
+- name: Create releases dir
+  file:
+    path: /opt/releases
+    state: directory
+
+- name: Clone specific version
   git:
-    repo: https://github.com/muxx/sre-hello-world.git
-    dest: /tmp/sre-app
+    repo: "{{ app_repo }}"
+    dest: "/opt/releases/{{ app_version }}"
+    version: "{{ app_version }}"
+    force: no
+
+
+- name: Update current symlink
+  file:
+    src: "/opt/releases/{{ app_version }}"
+    dest: "/opt/sre-app"
+    state: link
     force: yes
