@@ -7,3 +7,12 @@
     name: nginx
     state: restarted
     enabled: yes
+
+- name: Check application health
+  uri:
+    url: "http://127.0.0.1:9000"
+    status_code: 200
+  register: health
+  retries: 5
+  delay: 3
+  until: health.status == 200
