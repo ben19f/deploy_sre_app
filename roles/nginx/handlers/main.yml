@@ -1,3 +1,7 @@
+- name: Test nginx config
+  command: nginx -t
+  changed_when: false
+
 - name: Restart nginx
   systemd:
     name: nginx

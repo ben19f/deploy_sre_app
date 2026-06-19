@@ -15,22 +15,14 @@
     path: /etc/nginx/nginx.conf
     regexp: "^worker_processes"
     line: "worker_processes auto;"
+
   
 
 - name: Copy app-defaults
   copy:
     src: /opt/sre-app/web
     dest: /var/www/sre
-
     remote_src: yes
-
-- name: Copy app-defaults
-  copy:
-    src: /opt/sre-app/docker/hosts/app-defaults
-    dest: /etc/nginx/app-defaults
-
-    remote_src: yes
-
 
 - name: Copy app-conf
   copy:
@@ -45,6 +37,13 @@
     state: link
 
 
+- name: Copy app-defaults
+  copy:
+    src: /opt/sre-app/docker/hosts/app-defaults
+    dest: /etc/nginx/app-defaults
+    remote_src: yes
+
+
 - name: Remove default site
   file:
     path: /etc/nginx/sites-enabled/default
@@ -56,10 +55,10 @@
     path: /etc/nginx/app-defaults
     regexp: 'fastcgi_pass php:9000;'
     replace: 'fastcgi_pass 127.0.0.1:9000;'
-  notify: Restart nginx
+  notify:
+    - Test nginx config
+    - Restart nginx
 
-- name: Test nginx config
-  command: nginx -t
-  changed_when: false
+
   
 
