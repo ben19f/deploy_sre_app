@@ -46,12 +46,8 @@
     state: started
     enabled: yes
 
-# - name: Check PostgreSQL cluster
-#   command: pg_lsclusters
-#   register: pg_clusters
-#   changed_when: false
 
-- name: Check PostgreSQL cluster (safe)
+- name: Check PostgreSQL cluster
   command: pg_lsclusters
   register: pg_clusters
   changed_when: false
