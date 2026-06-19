@@ -9,7 +9,7 @@
     - build-sre-app
     - nginx
     - postgresql
-    - final-tests
+    - final-test
     
     
   

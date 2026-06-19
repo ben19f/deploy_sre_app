@@ -1,1 +1,1 @@
-postgres_password: super_secret_password
+postgres_password: ${{ secrets.DB_PASS }}

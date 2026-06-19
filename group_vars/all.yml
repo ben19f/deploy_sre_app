@@ -3,8 +3,8 @@ app_repo: "https://github.com/muxx/sre-hello-world.git"
 app_version: "v1.0.0"
 deploy_path: "/opt/sre-app"
 
-postgres_db: sre
-postgres_user: sre
+postgres_db: ${{ vars.DB_NAME }}
+postgres_user: ${{ vars.DB_USER }}
 
 
 
