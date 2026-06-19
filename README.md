@@ -7,7 +7,11 @@
 - тут добавлю теребования к целевой машине (ориентир не менее ~3GB)
 
 
+Скачайте этот репозиторий    
+git clone https://github.com/ben19f/deploy_sre_app.git
 
+зайдите в него 
+cd ~/deploy_sre_app
 
 
 ## Перед запуском плейбука:
@@ -18,23 +22,30 @@ ansible-galaxy collection install -r requirements.yml
 
 ### Установка и шифрование секретов
 
-запишите пароль БД и зашифруйте его коммандой
+запишите пароль БД 
+nano group_vars/vault.yml
+
+(вместо sre запишите свое значение)
+
+
+зашифруйте пароль коммандой
 ansible-vault encrypt group_vars/vault.yml
 (спросит пароль шифрования - придумайте свой пароль НЕ ПАРОЛЬ БД)
 
 ### внесение своих переменных
 
 для запуска нужно внести свои сервера в inventory
+nano  inventory.ini
+
 для запуска нужно внести свои названия БД и имя юзера БД
+nano group_vars/all.yml
 
 
 ## Полное развертывание
 
 ansible-playbook -i inventory.ini playbook_full.yml
 
-## Обновление приложения
 
-ansible-playbook -i inventory.ini playbook_deploy.yml
 
 ## Что разворачивается
 
@@ -43,6 +54,14 @@ ansible-playbook -i inventory.ini playbook_deploy.yml
 - PostgreSQL
 - Nginx
 - PHP приложение в докере
+
+
+
+## Обновление приложения
+
+ansible-playbook -i inventory.ini playbook_deploy.yml
+
+
 
 
 
@@ -78,3 +97,26 @@ worker_processes = auto (соответствует числу CPU cores)
 ### в кнтейнере 
     200мб это резерв на случай ошибок  чтобы не сработал OOM killer
     остальное делим на воркеры
+
+
+
+
+## структура устанавливаемого приложения
+https://github.com/muxx/sre-hello-world.git
+sre-hello-world
+├── docker
+│   ├── hosts
+│   │   ├── app.conf
+│   │   └── app-defaults
+│   └── images
+│       ├── php
+│       │   ├── Dockerfile
+│       │   └── php.ini
+│       └── postgres
+│           └── init-extensions.sh
+├── docker-compose.yml
+├── LICENSE
+├── README.md
+└── web
+    ├── app.php
+    └── title.jpg

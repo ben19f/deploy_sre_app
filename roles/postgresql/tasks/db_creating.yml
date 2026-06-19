@@ -25,20 +25,6 @@
     query: "SELECT to_regclass('public.author')"
   register: author_table
 
-# 
-
-# - name: Run init script
-#   shell: |
-#     set -a
-#     source /opt/sre-app/.env
-#     set +a
-
-#     PGPASSWORD="$POSTGRES_PASSWORD" \
-#     PGHOST=127.0.0.1 \
-#     bash /opt/sre-app/docker/images/postgres/init-extensions.sh
-#   args:
-#     executable: /bin/bash
-#   when: author_table.query_result[0].to_regclass is none
 
 - name: Run init script
   environment:
