@@ -19,6 +19,8 @@
   set_fact:
     docker_memory_mb: "{{ (ram_total_mb * ram_php) | int }}"
     php_memory_mb: "{{ (ram_total_mb * ram_php - 300) | int }}"
+    # php_ram_mb: "{{ (total_ram_mb * 0.30) | int }}"
+    # php_fpm_max_children: "{{ (php_ram_mb / 50) | int }}"
 
 
 # 3. tuning model

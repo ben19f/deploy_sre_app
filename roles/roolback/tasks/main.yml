@@ -1,6 +1,6 @@
 - name: Rollback to previous version
   file:
-    src: "{{ previous_release.stdout }}"
+    src: тут нужен номер прошлой версии
     dest: /opt/sre-app
     state: link
     force: yes

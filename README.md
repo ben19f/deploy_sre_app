@@ -71,7 +71,7 @@ ansible-playbook -i inventory.ini playbook_deploy.yml
 
 - PHP-FPM работает в контейнере Docker
 - PostgreSQL работает на хост-машине
-- Контейнер обращается к PostgreSQL через IP-адрес хоста (ansible_default_ipv4.address)
+- Контейнер обращается к PostgreSQL через IP-адрес хоста (host.docker.internal)
 - PostgreSQL настроен на разрешение подключений из подсети Docker (172.18.0.0/16)
 
 

@@ -18,8 +18,8 @@ ram_buffer: 0.15
 
 # PostgreSQL tuning (RAM-based)
 pg_memory_mb: "{{ (ansible_memtotal_mb * ram_postgres) | int }}"
-pg_shared_buffers: "{{ (pg_memory_mb * 0.30) | int }}MB"
-pg_effective_cache_size: "{{ (pg_memory_mb * 0.80) | int }}MB"
+pg_shared_buffers: "{{ (ansible_memtotal_mb * 0.30) | int }}MB"
+pg_effective_cache_size: "{{ (ansible_memtotal_mb * 0.80) | int }}MB"
 pg_work_mem: "16MB"
-pg_maintenance_work_mem: "64MB"
+pg_maintenance_work_mem: "{{ (total_ram_mb * 0.05) | int }}MB"
 pg_max_connections: 5
